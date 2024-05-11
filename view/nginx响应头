@@ -1,0 +1,34 @@
+
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+add_header X-Permitted-Cross-Domain-Policies none;
+add_header X-Download-Options noopen;
+add_header Content-Security-Policy "default-src 'self' share.okpig.com";#域名不需要引号
+add_header 'Referrer-Policy' 'origin';
+add_header Strict-Transport-Security "max-age=2592000; includeSubdomains; preload";
+
+'self'
+
+
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+add_header X-Permitted-Cross-Domain-Policies none;
+add_header X-Download-Options noopen;
+add_header Content-Security-Policy "default-src 'self'";
+add_header 'Referrer-Policy' 'origin'; #可以在页面中meta标签属性控制
+
+#add_header Strict-Transport-Security value; #http跳转https
+
+
+
+add_header X-Frame-Options SAMEORIGIN;
+add_header X-Content-Type-Options "nosniff";
+add_header X-XSS-Protection "1; mode=block";
+add_header X-Permitted-Cross-Domain-Policies none;
+add_header X-Download-Options noopen;
+add_header Content-Security-Policy "default-src 'self' xxx.xxx.com(允许的地址)";
+
+add_header 'Referrer-Policy' 'origin';
+#add_header Strict-Transport-Security "max-age=2592000; includeSubdomains; preload";#http跳转https

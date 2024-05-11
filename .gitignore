@@ -1,0 +1,6 @@
+/.idea
+/.vscode
+/vendor
+*.log
+public/upload_file/
+public/upload_files/
