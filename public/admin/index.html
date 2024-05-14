@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>后台管理系统</title>
+    <link href="/static/layui/layui-v2.9.9/css/layui.css" rel="stylesheet">
+    <script src="/static/layui/layui-v2.9.9/layui.js"></script>
+</head>
+<body>
+<div class="layui-layout-admin">
+    <!--头部-->
+    <div class="layui-header">
+        <div class="layui-logo">后台管理系统</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a><img src="../img/1.jpg" class="layui-nav-img">admin</a>
+                <dl class="layui-nav-child">
+                    <dd><a>基本资料</a></dd>
+                    <dd><a>安全设置</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <!--左侧-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree layui-inline" id="menu-nav-container" lay-filter="menu_nav_filter"
+                style="margin-right: 10px;">
+            </ul>
+        </div>
+    </div>
+
+    <image></image>
+    <!--中间主体-->
+    <div class="layui-body" id="container">
+        <div class="layui-tab" lay-filter="tabs" lay-allowClose="true">
+            <!-- 顶部选项卡 -->
+            <ul class="layui-tab-title"></ul>
+            <!-- 内容展示  -->
+            <div class="layui-tab-content"></div>
+        </div>
+    </div>
+
+    <!--底部-->
+    <div class="layui-footer">
+        <!--        <center>XXX版权所有</center>-->
+    </div>
+</div>
+<script>
+    var menuList = [
+        {
+            "id": 0,
+            "name": "系统管理",
+            "icon": "layui-icon-set",
+            "url": "",
+            "child": [
+                {
+                    "id": 1,
+                    "name": "用户管理",
+                    "url": "user/index.html"
+                }, {
+                    "id": 2,
+                    "name": "系统配置管理",
+                    "url": ""
+                },
+            ]
+        },
+        {
+            "id": 0,
+            "name": "抽奖管理",
+            "url": "",
+            "child": [
+                {
+                    "id": 3,
+                    "name": "奖品管理",
+                    "url": ""
+                },
+                {
+                    "id": 4,
+                    "name": "中奖查询",
+                    "url": ""
+                }
+            ]
+        },
+    ]
+
+
+    layui.use(['element'], function () {
+        const element = layui.element;
+        const $ = layui.$;
+
+        const active = {
+            //在这里给active绑定几项事件，后面可通过active调用这些事件
+            tabAdd: function (url, id, name) {
+                //新增一个Tab项 传入三个参数，分别对应其标题，tab页面的地址，还有一个规定的id，是标签中data-id的属性值
+                //关于tabAdd的方法所传入的参数可看layui的开发文档中基础方法部分
+                //tabs:中间主体的fiter名
+                element.tabAdd('tabs', {
+                    id: id, //规定好的id
+                    title: name,
+                    content: `<iframe data-frameid="${id}" scrolling="auto" frameborder="0" src="${url}" style="width:100%;height:100%;"></iframe>`,
+                })
+                //FrameWH(); //计算ifram层的大小
+            },
+            tabChange: function (id) {
+                //切换到指定Tab项
+                element.tabChange('tabs', id); //根据传入的id传入到指定的tab项
+            },
+            tabDelete: function (id) {
+                element.tabDelete("tabs", id); //删除
+            }
+        };
+        // 渲染菜单
+        createMenu()
+
+        // 配置tab实践在下面无法获取到菜单元素
+        $('.subMenu').on('click', function () {
+            const subMenuObj = $(this);
+            //这时会判断右侧.layui-tab-title属性下的有lay-id属性的li的数目，即已经打开的tab项数目
+            const tabId = $(".layui-tab-title>li[lay-id]");
+            if (tabId.length <= 0) {
+                //如果比零小，则直接打开新的tab项
+                active.tabAdd(subMenuObj.attr("data-url"), subMenuObj.attr("data-id"), subMenuObj.attr("data-title"));
+            } else {
+                //否则判断该tab项是否以及存在
+                let isData = false; //初始化一个标志，为false说明未打开该tab项 为true则说明已有
+                $.each(tabId, function () {
+                    //如果点击左侧菜单栏所传入的id 在右侧tab项中的lay-id属性可以找到，则说明该tab项已经打开
+                    if ($(this).attr("lay-id") === subMenuObj.attr("data-id")) {
+                        isData = true;
+                        return false;
+                    }
+                })
+                if (isData === false) active.tabAdd(subMenuObj.attr("data-url"), subMenuObj.attr("data-id"), subMenuObj.attr("data-title"));
+            }
+            //最后不管是否新增tab，最后都转到要打开的选项页面上
+            active.tabChange(subMenuObj.attr("data-id"));
+        });
+
+
+        function FrameWH() {
+            var h = $(window).height();
+            //$("iframe").css("height", h + "px");
+        }
+
+        function createMenu() {
+            let html = ``
+            for (const v of menuList) {
+                html +=
+                    `<li class="layui-nav-item layui-nav-itemed">
+                    <a>
+                        <i class="layui-icon iconset ${v.icon}"></i>
+                        ${v.name}
+                    </a>`
+                if (v.child && v.child.length > 0) {
+                    html += `<dl class="layui-nav-child">`
+                    for (const v2 of v.child) {
+                        html +=
+                            `<dd>
+                          <a class="subMenu" data-id="3" data-title="${v2.name}" data-url="${v2.url}">
+                              <i class="layui-icon iconset ${v2.icon}"></i>
+                              ${v2.name}
+                          </a>
+                    </dd>`
+                    }
+                    html += `</dl>`
+                }
+                html += `</li>`
+            }
+            $('#menu-nav-container').html(html)
+            element.render('nav', 'menu_nav_filter')
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -8,5 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+use think\facade\Route;
 
+Route::group(function () {
+    Route::get('index/index', 'Index@index');
+    Route::get('qr_code/getDetail', 'QrCode@getDetail');
+    Route::get('login/getCode', 'Login@getCode');
+    //需要登录token验证
+    Route::group(function () {
 
+    })->middleware(['apiAuthToken']);
+})->prefix('app\api\controller\\');

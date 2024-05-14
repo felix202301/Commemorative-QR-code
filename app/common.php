@@ -4,10 +4,10 @@
 if (!function_exists('success')) {
     /**
      * 请求成功返回
-     * @param array $data
-     * @param string $msg
-     * @param int $code
-     * @return \think\response\Json
+     * @param $data
+     * @param $msg
+     * @param $code
+     * @return array|mixed
      */
     function success($data = [], $msg = '成功', $code = 2000)
     {
@@ -23,23 +23,26 @@ if (!function_exists('success')) {
             //$result['time'] = time(); // 请求返回时间
             $result['data'] = $data;  // 请求返回数据
         }
-        return json($result);
+        return $result;
+        //return json($result);
     }
 }
 
 if (!function_exists('error')) {
     /**
      * 请求失败返回
-     * @param string $msg
-     * @param int $code
-     * @return \think\response\Json
+     * @param $msg
+     * @param $code
+     * @return array
      */
     function error($msg = '失败', $code = 5000)
     {
         $result['code'] = $code;
         $result['message'] = $msg;
         //$result['time'] = time();
-        return json($result);
+
+        return $result;
+        //return json($result);
     }
 }
 
